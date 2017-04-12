@@ -550,7 +550,7 @@ function initProtoplanets() {
     var onError = function ( xhr ) {
     };
 
-    //https://bowlroll.net/file/23365
+    //http://www.nicovideo.jp/watch/sm20793055
     var modelFile = 'models/mmd/model.pmx';
     // var modelFile = 'models/mmd/miku/miku_v2.pmd';
     // var vmdFiles = [ 'models/mmd/vmds/wavefile_v2.vmd' ];
