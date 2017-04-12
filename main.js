@@ -476,7 +476,7 @@ function initProtoplanets() {
 
 
     // var path = './imgs/';
-    var path = './imgs/cube/SwedishRoyalCastle_/';
+    var path = './imgs/SwedishRoyalCastle_/';
     // var urls = [ path + "posx.jpg", path + "negx.jpg",
     //     path + "posy.jpg", path + "negy.jpg",
     //     path + "posz.jpg", path + "negz.jpg" ];
