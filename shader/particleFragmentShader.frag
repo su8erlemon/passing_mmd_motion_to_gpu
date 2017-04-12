@@ -9,7 +9,7 @@ struct PointLight {
 uniform PointLight pointLights[ NUM_POINT_LIGHTS ];
 uniform mat4 invMatrix;
 
-varying vec3 vPosition;
+varying vec4 vPosition;
 varying vec4 vColor;
 varying vec2 vUv;
 
@@ -20,7 +20,7 @@ void main() {
     vec3 fnormal = normalize(cross(normalize(dx), normalize(dy)));
 
     vec3 lightPos = pointLights[0].position;
-    vec3 lightDirection = normalize( vPosition - lightPos );
+    vec3 lightDirection = normalize( vPosition.xyz - lightPos );
 
     vec3 invLight = normalize(invMatrix * vec4(lightDirection, 0.0)).xyz;
     float diffuse  = clamp(dot(fnormal, invLight), 0.5, 1.0);

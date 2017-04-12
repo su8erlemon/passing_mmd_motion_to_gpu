@@ -5,5 +5,15 @@
 
 .__SC__menu{
     position: absolute;
-    bottom: 0px;
+    bottom: 20px;
+}
+
+.__SC__menu a{
+    color: #fff;
+    padding: 20px;
+}
+
+
+#SoundCloudController_debug{
+    display: none;
 }

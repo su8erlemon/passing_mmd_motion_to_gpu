@@ -3,6 +3,7 @@
 #pragma glslify: snoise = require('glsl-noise/simplex/3d')
 
 uniform float time;
+uniform float amount;
 
 float maxspeed = 5.0;
 float maxforce = 0.5;
@@ -36,8 +37,9 @@ void main() {
 
     tmpPos.y<=0.0?(vel = vec3(vel.x*0.4,abs(vel.y)*0.4,vel.z*0.4)):vec3(0.0);
     (tmpPos.y<=0.001)?tmpVel.w += 1.0:tmpVel.w = 0.;
+//    (amount==0.?tmpVel.w = 0.0:0.0);
 
-    vel += tmpAcc.xyz;
+    vel += tmpAcc.xyz*(amount==0.?vec3(0.0,1.0,0.0):vec3(1.0,1.0,1.0));
 //    vel += vec3(0.0,0.0,0.0);
 
     //vel.y *= (tmpPos.w>0.0?1.0:-1.0);

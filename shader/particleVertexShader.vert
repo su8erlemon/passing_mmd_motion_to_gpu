@@ -6,11 +6,12 @@ uniform sampler2D textureAcceleration;
 uniform float cameraConstant;
 uniform float density;
 
-varying vec3 vPosition;
+varying vec4 vPosition;
 varying vec4 vColor;
 varying vec2 vUv;
 
 uniform float radius;
+uniform float amount;
 
 //uniform sampler2D texture1;
 ////varying vec4 vColor;
@@ -37,7 +38,7 @@ void main() {
     vec3 pos = posTemp.xyz;
 
     // position is box's position. it has 6 faces
-    vec3 newPosition = position;
+    vec3 newPosition = position * amount;
 
     newPosition = mat3( modelMatrix ) * newPosition;
 
@@ -78,13 +79,14 @@ void main() {
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
 
-    vPosition = newPosition;
+    vPosition = gl_Position;
 
     //vColor = vec4( 1.0, 1.0, 1.0 - accTemp.w * 0.03 , 1.0 );
-    float per = accTemp.w * 0.02;
-    vColor = vec4( 247.0/255.0, 40.0/255.0, 92.0/255.0, 1.0 ) * (1.0-per) +
+    float per = accTemp.w * 0.03;
+    vColor = vColor = vec4( gl_Position.zxy, 1.0 ) * (1.0-per) +
+            //vec4( 247.0/255.0, 240.0/255.0, 92.0/255.0, 1.0 ) * (1.0-per) +
 //                 vec4( 52.0/255.0, 38.0/255.0, 91.0/255.0, 1.0 ) * (per);
-                vec4( 2550.0/255.0, 235.0/255.0, 5.0/255.0, 1.0 ) * (per);
+                vec4( 240.0/255.0, 240.0/255.0, 35.0/255.0, 1.0 ) * (per);
 
 
 }

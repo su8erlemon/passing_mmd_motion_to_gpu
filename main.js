@@ -12,7 +12,7 @@ const soundCloud = new SoundCloud();
 soundCloud.init("https://soundcloud.com/gradesofficial/king-chris-lake-remix",
     (menuElement, debugCanvas) => {
         document.body.appendChild( menuElement );
-        document.body.appendChild( debugCanvas );
+        // document.body.appendChild( debugCanvas );
 
         soundCloudTexture = new THREE.DataTexture(soundCloud.getBytes(), 8, 8, THREE.RGBFormat );
         soundCloudTexture.needsUpdate = true;
@@ -112,22 +112,22 @@ var uniforms2;
 
 var cameraLookAt = new THREE.Vector3(0,0.3,0);
 var cameraLookAt2 = new THREE.Vector3(0,0.3,0);
-var rl1 = 0,r12,rl3;
+var rl1 = 0,
+    rl2 = 0,rl3;
 
 init();
-animate();
 
 
 function init() {
 
-    // camera.position.z = 1.5;
+    camera.position.z = 1.5;
     // camera.position.x = -1;
     // camera.position.y = 1.0;
     // camera.lookAt(new THREE.Vector3(0,0.4,0));
     // camera.position.z = -2.0;
     // camera.position.x = .0;
     // camera.position.y = 0.3;
-    // camera.lookAt(cameraLookAt);
+    camera.lookAt(cameraLookAt);
 
 
     initComputeRenderer();
@@ -175,8 +175,10 @@ function initComputeRenderer() {
 
     positionVariable.material.uniforms.texture1     = { type: "t", value: null };
     velocityVariable.material.uniforms.texture1     = { type: "t", value: null };
+    velocityVariable.material.uniforms.amount   = { type: "f", value: null };
     accelerationVariable.material.uniforms.texture1 = { type: "t", value: null };
     accelerationVariable.material.uniforms.texture2 = { type: "t", value: null };
+
 
     // danceVariable.material.uniforms.time = {
     //     value:0
@@ -347,6 +349,7 @@ function initProtoplanets() {
             texturePosition:     { value: null },
             textureVelocity:     { value: null },
             textureAcceleration: { value: null },
+            amount:              { type: "f",  value: 0 }, // single float
             cameraConstant: { value: getCameraConstant( camera ) },
             invMatrix: { value: new THREE.Matrix4() },
         },
@@ -393,7 +396,7 @@ function initProtoplanets() {
 
 
     // make particle
-    const BODY_NUM = 36*90;
+    const BODY_NUM = 36*251;
     var bodyGeometry = new THREE.BufferGeometry();
     var bodyPositions = new Float32Array( BODY_NUM * 3 );
 
@@ -427,9 +430,9 @@ function initProtoplanets() {
     ];
 
     var randomSize;
-    // var randomSizeH;
+    var randomSizeH;
     for ( var i = 0; i < BODY_NUM * 3; i+= 3 * 3 * 4 ) {
-        randomSize  = 0.8+(i%22==0?1.0:0.0);//Math.random()*3.0-1.0;
+        randomSize  = 1.0;// +(i%22==0?0.8:0.0);//Math.random()*3.0-1.0;
         // randomSizeH = (Math.random()+Math.random()+Math.random()+Math.random()+Math.random())/5.0;
         for( var k = 0; k < 3*3*12; k+=3 ){
             bodyPositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize;// * randomSize*2.;//*randomSize*40.0;
@@ -465,20 +468,76 @@ function initProtoplanets() {
     bodyGeometry.addAttribute( 'bodyIndex', new THREE.BufferAttribute( bodyIndex, 1 ) );
 
 
-    bodyUniforms = THREE.UniformsUtils.merge([
+
+
+
+
+
+
+
+    // var path = './imgs/';
+    var path = './imgs/cube/SwedishRoyalCastle_/';
+    // var urls = [ path + "posx.jpg", path + "negx.jpg",
+    //     path + "posy.jpg", path + "negy.jpg",
+    //     path + "posz.jpg", path + "negz.jpg" ];
+    var urls = [
+        path + "pz.jpg",
+        path + "nz.jpg",
+        path + "pz.jpg",
+        path + "nz.jpg",
+        path + "pz.jpg",
+        path + "nz.jpg"
+    ];
+    var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+
+
+
+
+
+
+
+
+
+
+
+
+    bodyUniforms = Object.assign(
         THREE.UniformsLib['lights'],
         {
             texture1:            { type: "t", value: null },
             soundCloudTexture:   { type: "t", value: null },
             soundCloudHigh : { type: "f", value: 0 }, // single float
             soundCloudLow : { type: "f",  value: 0 }, // single float
+            envMap: {
+                type: "t",
+                value: textureCube
+            },
             texturePosition:     { value: null },
             textureVelocity:     { value: null },
             textureAcceleration: { value: null },
             cameraConstant: { value: getCameraConstant( camera ) },
             invMatrix: { value: new THREE.Matrix4() },
         }
-    ]);
+    );
+
+    // bodyUniforms = THREE.UniformsUtils.merge([
+    //     THREE.UniformsLib['lights'],
+    //     {
+    //         texture1:            { type: "t", value: null },
+    //         soundCloudTexture:   { type: "t", value: null },
+    //         soundCloudHigh : { type: "f", value: 0 }, // single float
+    //         soundCloudLow : { type: "f",  value: 0 }, // single float
+    //         envMap: {
+    //             type: "t",
+    //             value: textureCube
+    //         },
+    //         texturePosition:     { value: null },
+    //         textureVelocity:     { value: null },
+    //         textureAcceleration: { value: null },
+    //         cameraConstant: { value: getCameraConstant( camera ) },
+    //         invMatrix: { value: new THREE.Matrix4() },
+    //     }
+    // ]);
 
     // // ShaderMaterial
     var bodyMaterial = new THREE.ShaderMaterial( {
@@ -500,7 +559,7 @@ function initProtoplanets() {
     // var bodyMarticles2 = new THREE.Line( bodyGeometry, bodyMaterial );
     bodyMarticles.matrixAutoUpdate = false;
     bodyMarticles.updateMatrix();
-    //sscene.add( bodyMarticles );
+    scene.add( bodyMarticles );
     // scene.add( bodyMarticles2 );
 
     var m = new THREE.Matrix4();
@@ -562,7 +621,7 @@ function initProtoplanets() {
     var loader = new THREE.MMDLoader();
     loader.loadModel( modelFile, function ( mmdMesh ) {
 
-        // console.log(mmdMesh)
+        console.log(mmdMesh)
 
         var indexs = new Float32Array( mmdMesh.geometry.attributes.position.count );
         for ( var i = 0; i < mmdMesh.geometry.attributes.position.count; i++ ) {
@@ -587,7 +646,7 @@ function initProtoplanets() {
 
         mesh = mmdMesh;
         mesh.scale.set(0.4,0.4,0.4);
-        // mesh.position.y = -12;
+        mesh.position.x = -1.4;
 
         //scene.add( mesh );
         bufferScene.add( mesh );
@@ -601,24 +660,24 @@ function initProtoplanets() {
         // window.mmdMesh.mixer.timeScale = 1.14814814815;
 
         //debug ==================================================
-        uniforms2 = {
-            texture1: { type: "t", value: null }
-        };
-
-        var shaderMaterial = new THREE.ShaderMaterial({
-            uniforms:uniforms2,
-            fragmentShader: debugMMDFrag,
-            vertexShader:   debugMMDVert,
-            transparent: true,
-        });
-
-        // var mat22 = new THREE.MeshBasicMaterial( { color: 0xffaa00} );
-        // var mat33 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.SmoothShading, });
-
-        // var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
-        var box1 = new THREE.Mesh(mmdMesh.geometry, shaderMaterial)
-        // var box1 = new THREE.Line(mmdMesh.geometry, shaderMaterial)
-        scene.add(box1);
+        // uniforms2 = {
+        //     texture1: { type: "t", value: null }
+        // };
+        //
+        // var shaderMaterial = new THREE.ShaderMaterial({
+        //     uniforms:uniforms2,
+        //     fragmentShader: debugMMDFrag,
+        //     vertexShader:   debugMMDVert,
+        //     transparent: true,
+        // });
+        //
+        // // var mat22 = new THREE.MeshBasicMaterial( { color: 0xffaa00} );
+        // // var mat33 = new THREE.MeshPhongMaterial( { color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.SmoothShading, });
+        //
+        // // var box1 = new THREE.Points(mmdMesh.geometry, shaderMaterial)
+        // var box1 = new THREE.Mesh(mmdMesh.geometry, shaderMaterial)
+        // // var box1 = new THREE.Line(mmdMesh.geometry, shaderMaterial)
+        // scene.add(box1);
         //debug ==================================================
 
 
@@ -671,30 +730,31 @@ function initProtoplanets() {
                     window.mmdMesh.mixer.timeScale = 1.11851851851
 
                     $(document).keypress(function(e) {
-                        switch (e.key){
-                            case 'a':
+                        switch (e.which){
+                            case 97:
                                 playAnimation("dance1")
                                 break;
-                            case 's':
+                            case 115:
                                 playAnimation("dance2")
                                 break;
 
-                            case 'd':
+                            case 100:
                                 playAnimation("dance3")
                                 break;
 
-                            case 'f':
+                            case 102:
                                 playAnimation("dance4")
                                 break;
 
-                            case 'g':
+                            case 103:
                                 playAnimation("dance5")
                                 break;
 
-                            case 'h':
+                            case 104:
                                 playAnimation("dance6")
                                 break;
-                            case 'j':
+
+                            case 106:
                                 playAnimation("dance7")
                                 break;
 
@@ -707,6 +767,8 @@ function initProtoplanets() {
                     // console.log(mesh.geometry.animations.length);
 
                     initGui();
+
+                    animate();
 
                 }
             }, onProgress, onError);
@@ -754,9 +816,9 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
         // console.log("num",count)
         // Position
         var x, y, z;
-        var posrX = Math.random() - .5;
-        var posrY = Math.random() + 0.3;// - .5;
-        var posrZ = Math.random() - 0.5;
+        var posrX = 0;//Math.random() - .5;
+        var posrY = 0;//Math.random() + 0.3;// - .5;
+        var posrZ = 0;//Math.random() - 0.5;
         var w = count;//Math.random()*9000;
 
         for( var k2 = 0; k2 < 4*3*12; k2 += 4 ){
@@ -780,9 +842,9 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
         }
 
 
-        var accX = Math.random() * 0.0001 - 0.00005;
-        var accY = -0.001;//-0.0001 - Math.random()*0.001;
-        var accZ = Math.random() * 0.0001 - 0.00005 - 0.0005;
+        var accX = Math.random() * 0.01 - 0.005;
+        var accY = -0.0001;//-0.0001 - Math.random()*0.001;
+        var accZ = Math.random() * 0.01 - 0.005;
 
         for( var k2 = 0; k2 < 4*3*12; k2 += 4 ){
             accArray[ k + k2+0 ] = accX;
@@ -840,14 +902,18 @@ function animate() {
     rl1 += 0.003;
     if( rl1 > 6.28 )rl1 -= 6.28;
 
+    rl2 += 0.01;
+    if( rl2 > 6.28 )rl2 -= 6.28;
+
+
     // camera.position.z = mmdMesh.skeleton.bones[0].position.z*0.4;
     // camera.position.x = mmdMesh.skeleton.bones[0].position.x*0.4;
     // camera.position.y = mmdMesh.skeleton.bones[0].position.y*0.4;
 
-    /*
+
     camera.position.x = 2.0 * Math.cos(rl1);
-    camera.position.y = 1.0;
-    camera.position.z = 2.0 * Math.sin(rl1);
+    camera.position.y = 1.0 + Math.cos(rl2)*0.5;
+    camera.position.z = 1.0+2.0 * Math.sin(rl1) + Math.sin(rl2)*0.5;
 
     light.position.x = camera.position.x;
     light.position.y = camera.position.y;
@@ -858,8 +924,8 @@ function animate() {
         cameraLookAt2.y += (mmdMesh.skeleton.bones[0].position.y*0.00 - cameraLookAt2.y )/10.0;
         cameraLookAt2.z += (mmdMesh.skeleton.bones[0].position.z*0.01 - cameraLookAt2.z )/10.0;
     }
-    cameraLookAt.set(cameraLookAt2.x,cameraLookAt2.y,cameraLookAt2.z)
-    camera.lookAt(cameraLookAt);*/
+    cameraLookAt.set(cameraLookAt2.x,0.3+cameraLookAt2.y,cameraLookAt2.z)
+    camera.lookAt(cameraLookAt);
 
     if( motionObj ){
 
@@ -905,6 +971,11 @@ function render() {
     positionVariable.material.uniforms.time.value     += 1/60;
     accelerationVariable.material.uniforms.time.value += 1/60;
 
+    if( motionObj ){
+        particleUniforms.amount.value                   = (1.0-motionObj.dance1.weight);
+        velocityVariable.material.uniforms.amount.value = (1.0-motionObj.dance1.weight);
+    }
+
     //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle velocity
     velocityVariable.material.uniforms.texture1.value = bufferTexture.texture;
     //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle position
@@ -916,6 +987,7 @@ function render() {
     //pass mmd skineed mesh data to particle shader to calculate final particle position
     particleUniforms.texture1.value = bufferTexture.texture;
     bodyUniforms.texture1.value = bufferTexture.texture;
+
 
     if( soundCloudTexture ) {
         soundCloudTexture.image.data = soundCloud.getBytes();
