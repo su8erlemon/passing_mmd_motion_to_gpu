@@ -159,7 +159,7 @@ p, a{
 
 .info.show{
     opacity: 1;
-    transition: opacity 0.5s linear 8.0s;
+    transition: opacity 0.5s linear 5.0s;
 }
 
 

@@ -14,7 +14,6 @@ For development, you will need Node.js installed on your environment.
   v6.4.0
 ```
 
------------------------
 ## Installation 
 ```
   $ git clone git@github.com:su8erlemon/passing_mmd_motion_to_gpu.git
@@ -28,7 +27,6 @@ For development, you will need Node.js installed on your environment.
   $ npm run start
 ```
 
------------------------
 ## Build
 ```
   $ npm run build
