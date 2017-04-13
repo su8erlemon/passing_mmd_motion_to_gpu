@@ -36,4 +36,6 @@ For development, you will need Node.js installed on your environment.
 ## Further Reading
 <https://github.com/mattdesl/budo> - a dev server for rapid prototyping
 
-<http://qiita.com/ykido/items/55c7f17fb32216056705> - (Japanese)Threejs ShaderMaterial + SkinnedMesh 
+<http://qiita.com/ykido/items/55c7f17fb32216056705> - (Japanese)Threejs ShaderMaterial + SkinnedMesh
+ 
+<http://qiita.com/uma6661/items/20accc9b5fb9845fc73a> - (Japanese)Understanding GPGPU
