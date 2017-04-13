@@ -11,7 +11,6 @@ uniform mat4 invMatrix;
 
 varying vec4 vPosition;
 varying vec4 vColor;
-varying vec2 vUv;
 
 void main() {
 
@@ -25,11 +24,6 @@ void main() {
     vec3 invLight = normalize(invMatrix * vec4(lightDirection, 0.0)).xyz;
     float diffuse  = clamp(dot(fnormal, invLight), 0.8, 1.0);
 
-    vUv;
-    vColor;
-    vPosition;
-
-//    gl_FragColor = vColor;
     gl_FragColor = vColor * vec4(vec3(diffuse), 1.0);
 
 }

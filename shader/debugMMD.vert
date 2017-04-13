@@ -1,13 +1,4 @@
-/**
- * Multiply each vertex by the
- * model-view matrix and the
- * projection matrix (both provided
- * by Three.js) to get a final
- * vertex position
- */
-
 uniform sampler2D texture1;
-//varying vec4 vColor;
 
 attribute float index2;
 const float frag = 1.0 / 128.0;

@@ -41,24 +41,11 @@ void main() {
     vec3 tmpDan = texture2D( texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
     vec3 tmpDan2 = texture2D( texture2, vec2(pu, pv)).rgb * 2.0 - 1.0;
 
-//    vec3 acc = ((tmpPos.xyz - tmpVel.xyz) - tmpDan) * 0.001;
-//    vec3 acc = vec3(tmpAcc.xyz);
-//    vec3 acc = vec3( 0.0000, -0.001, -0.001);
-//    vec3 acc = vec3( 0.0, 0.0, 0.0);
-//    vec3 acc = (-tmpDan - (tmpPos.xyz + tmpVel.xyz)) * 0.01;
-
-//    vec3 acc = (tmpDan-tmpDan2 )*0.08 + vec3( 0.0000, -0.001, 0.000);
-
-
     vec3 acc = tmpAcc.xyz;
     vec3 dx = limit(tmpDan-tmpDan2,0.06);
+
     (tmpVel.w>10.)?(acc = (dx )*0.015 + vec3( 0.0000, -0.001-rand1(tmpDan.xz)*0.0005, 0.000)):vec3(0.0);
-//    (tmpVel.w>10.)?(acc = (tmpDan-tmpDan2 )*0.001 + vec3( 0.0000, -0.0001-rand1(tmpDan.xz)*0.00005, -0.001)):vec3(0.0);
-
-
-
     (tmpVel.w>10.)?tmpAcc.w = 0.0:tmpAcc.w += 1.0;
-
 
     // acc.w is the time of after particle born
     gl_FragColor = vec4( acc.xyz, tmpAcc.w );

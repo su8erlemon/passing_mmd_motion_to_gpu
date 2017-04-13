@@ -11,16 +11,12 @@ uniform float soundCloudHigh;
 
 
 varying vec4 vPosition;
-varying vec4 vColor;
-varying vec2 vUv;
 
 uniform float radius;
-//uniform int audioGain[ 4 ];
 
 
 uniform sampler2D texture1;
 uniform sampler2D soundCloudTexture;
-//varying vec4 vColor;
 
 attribute float bodyIndex;
 attribute vec3 bodyRotation;
@@ -28,7 +24,6 @@ attribute vec3 bodyRotation;
 const float frag = 1.0 / 128.0;
 const float texShift = 0.5 * frag;
 
-//varying vec3 vReflect;
 varying float vReflectionFactor;
 varying vec4 vWorldPosition;
 varying mat3 vModelMatrix;
@@ -54,37 +49,16 @@ float rand2(vec2 co){
 void main() {
 
     vec4 velTemp = texture2D( textureVelocity, uv );
-//    vec4 accTemp = texture2D( textureAcceleration, uv );
     vec4 tmpPos = texture2D( texturePosition, uv );
-
-//    vColor = vec4( 63.0/255.0, 81.0/255.0, 100.0/255.0,  0.7 );
-//    vColor = vec4( 1.0 - velTemp.xxx * 50.0, 0.8  - zzz * 0.8);
-//    vColor = vec4( 63.0/255.0, 81.0/255.0, 100.0/255.0,  0.7  - zzz * 0.7 );
-//    vColor = vec4( 240./255.0, 240./255.0, 240./255.0, 1.0 );
-//    vColor = vec4( .0, 240./255.0, .0,  0.3  - zzz * 0.3);
-
-
 
     float index = tmpPos.w*50.0;//rand(tmpPos.xy)*12200.;
     float pu = fract(index * frag + texShift);
     float pv = floor(index * frag) * frag + texShift;
     vec3 tmpDan = texture2D( texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
 
-
-
     vec3 soundCloud = texture2D( soundCloudTexture, vec2(pu, pv)).rgb*2.0;
     float power = length(limit(0.5+soundCloud,2.0)) * soundCloudLow;
 
-//    tmpDan *= 1.0+soundCloud;
-
-
-
-
-
-    //pos += position;
-
-    // pos is the position of each box
-//    vec3 pos = posTemp.xyz;
 
     // position is box's position. it has 6 faces
     vec3 newPosition = position;
@@ -117,17 +91,8 @@ void main() {
       0, power, 0,
       0     , 0  , power
     );
-//    mat3 trans =  mat3(
-//          1 , 0, 0,
-//          0,1, 0,
-//          power  , power    , 1
-//        );
-
 
     newPosition = scale * maty * matz  * newPosition;
-
-
-//    newPosition += pos;
 
 
     power *= 0.01;
@@ -138,19 +103,9 @@ void main() {
 
     newPosition += tmpDan;
 
-    vUv = uv;
-
     gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
 
     vPosition = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );;
-
-    //vColor = vec4( 1.0, 1.0, 1.0 - accTemp.w * 0.03 , 1.0 );
-
-//    vColor = vec4( 0.0/255.0, 250.0/255.0, 92.0/255.0, 1.0 );
-    vColor = vec4( 255.0/255.0, 40.0/255.0, 92.0/255.0, 1.0 );
-//    vColor = vec4( 230.0/255.0, 230.0/255.0, 230.0/255.0, 1.0 );
-//    vColor = vec4( newPosition-bodyRotation*0.1, 1.0 );
-
 
 
 
@@ -158,11 +113,10 @@ void main() {
     vec4 worldPosition = modelMatrix * vec4( vPosition.xyz, 1.0 );
     vWorldPosition = worldPosition;
     vModelMatrix = mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz );
-    //vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );
-    //vec3 I = worldPosition.xyz - cameraPosition;
+
     vCameraPosition = cameraPosition;
-    //vReflect = reflect( I, worldNormal );
-    vReflectionFactor = 1.0;//fresnelBias + fresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), fresnelPower );
+
+    vReflectionFactor = 1.0;
 
 
 }

@@ -8,31 +8,15 @@ uniform float density;
 
 varying vec4 vPosition;
 varying vec4 vColor;
-varying vec2 vUv;
 
 uniform float radius;
 uniform float amount;
-
-//uniform sampler2D texture1;
-////varying vec4 vColor;
-//
-//attribute float index2;
-//const float frag = 1.0 / 128.0;
-//const float texShift = 0.5 * frag;
 
 void main() {
 
     vec4 velTemp = texture2D( textureVelocity, uv );
     vec4 accTemp = texture2D( textureAcceleration, uv );
     vec4 posTemp = texture2D( texturePosition, uv );
-
-//    vColor = vec4( 63.0/255.0, 81.0/255.0, 100.0/255.0,  0.7 );
-//    vColor = vec4( 1.0 - velTemp.xxx * 50.0, 0.8  - zzz * 0.8);
-//    vColor = vec4( 63.0/255.0, 81.0/255.0, 100.0/255.0,  0.7  - zzz * 0.7 );
-//    vColor = vec4( 240./255.0, 240./255.0, 240./255.0, 1.0 );
-//    vColor = vec4( .0, 240./255.0, .0,  0.3  - zzz * 0.3);
-
-    //pos += position;
 
     // pos is the position of each box
     vec3 pos = posTemp.xyz;
@@ -68,20 +52,10 @@ void main() {
 
     newPosition += pos;
 
-
-//    float pu = fract(index2 * frag + texShift);
-//    float pv = floor(index2 * frag) * frag + texShift;
-//    vec3 tPosition = texture2D(texture1, vec2(pu, pv)).rgb * 2.0 - 1.0;
-
-//    pos = tPosition;
-
-    vUv = uv;
-
     gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
 
     vPosition = gl_Position;
 
-    //vColor = vec4( 1.0, 1.0, 1.0 - accTemp.w * 0.03 , 1.0 );
     float per = accTemp.w * 0.03;
     vColor = vColor = vec4( gl_Position.zxy, 1.0 ) * (1.0-per) +
             //vec4( 247.0/255.0, 240.0/255.0, 92.0/255.0, 1.0 ) * (1.0-per) +

@@ -7,13 +7,10 @@ const glsl = require('glslify');
 let soundCloudTexture;
 import {SoundCloud} from './lib/SoundCloud.js';
 const soundCloud = new SoundCloud();
-// soundCloud.init("https://soundcloud.com/aoki-1/sswb-aoki-takamasa-remix-excerpt",
 soundCloud.init("https://soundcloud.com/gradesofficial/king-chris-lake-remix",
     (menuElement, debugCanvas) => {
 
-
         document.getElementById("footer").appendChild( menuElement );
-        // document.body.appendChild( debugCanvas );
 
         soundCloudTexture = new THREE.DataTexture(soundCloud.getBytes(), 8, 8, THREE.RGBFormat );
         soundCloudTexture.needsUpdate = true;
@@ -21,9 +18,6 @@ soundCloud.init("https://soundcloud.com/gradesofficial/king-chris-lake-remix",
 
         soundCloud.setPoint("low",32);
         soundCloud.setPoint("high",13);
-
-        // soundCloud.debugShow();
-
 
         if( !soundCloud.getIsPlay())soundCloud.play();
         window.soundCloud = soundCloud;
@@ -65,7 +59,6 @@ var mesh;
 var helper;
 var clock = new THREE.Clock();
 
-// Texture width for simulation (each texel is a debris particle)
 var WIDTH = 36*20;
 
 var geometry;
@@ -115,26 +108,16 @@ var uniforms2;
 var cameraLookAt = new THREE.Vector3(0,0.3,0);
 var cameraLookAt2 = new THREE.Vector3(0,0.3,0);
 var rl1 = 3.2,
-    rl2 = 0,rl3;
+    rl2 = 0;
 
 init();
 
 
 function init() {
 
-    camera.position.z = 1.5;
-    // camera.position.x = -1;
-    // camera.position.y = 1.0;
-    // camera.lookAt(new THREE.Vector3(0,0.4,0));
-    // camera.position.z = -2.0;
-    // camera.position.x = .0;
-    // camera.position.y = 0.3;
-    camera.lookAt(cameraLookAt);
-
-
     initComputeRenderer();
-
     initProtoplanets();
+
 }
 
 function initComputeRenderer() {
@@ -151,17 +134,13 @@ function initComputeRenderer() {
     positionVariable     = gpuCompute.addVariable( "texturePosition",     computeShaderPosition,     dtPosition     );
     accelerationVariable = gpuCompute.addVariable( "textureAcceleration", computeShaderAcceleration, dtAcceleration );
 
-    // danceVariable    = gpuCompute.addVariable( "textureDance"   , computeShaderDance   , dtDance    );
-
     gpuCompute.setVariableDependencies( velocityVariable,     [ positionVariable, velocityVariable, accelerationVariable ] );
     gpuCompute.setVariableDependencies( positionVariable,     [ positionVariable, velocityVariable, accelerationVariable ] );
     gpuCompute.setVariableDependencies( accelerationVariable, [ positionVariable, velocityVariable, accelerationVariable ] );
-    // gpuCompute.setVariableDependencies( danceVariable   , [ positionVariable, velocityVariable, danceVariable ] );
 
     positionUniforms     = positionVariable.material.uniforms;
     velocityUniforms     = velocityVariable.material.uniforms;
     accelerationUniforms = accelerationVariable.material.uniforms;
-    //danceUniforms    = danceVariable.material.uniforms;
 
     positionVariable.material.uniforms.time = {
         value:0
@@ -181,11 +160,6 @@ function initComputeRenderer() {
     accelerationVariable.material.uniforms.texture1 = { type: "t", value: null };
     accelerationVariable.material.uniforms.texture2 = { type: "t", value: null };
 
-
-    // danceVariable.material.uniforms.time = {
-    //     value:0
-    // };
-
     gpuCompute.init();
 
 }
@@ -194,38 +168,22 @@ function initComputeRenderer() {
 function initProtoplanets() {
 
 
-    // var debugMaterial = new THREE.MeshBasicMaterial({map:bufferTexture.texture});
-    // var plane1 = new THREE.PlaneBufferGeometry( 1,1);
-    // var planeObject1 = new THREE.Mesh(plane1,debugMaterial);
-    // planeObject1.position.x = 1.5;
-    // planeObject1.position.y = 1.0;
-    // scene.add(planeObject1);
-    //
-    // var debugMaterial2 = new THREE.MeshBasicMaterial({map:bufferTexture2.texture});
-    // var plane2 = new THREE.PlaneBufferGeometry( 1,1);
-    // var planeObject2 = new THREE.Mesh(plane2,debugMaterial2);
-    // planeObject2.position.x = 2.9;
-    // planeObject2.position.y = 1.0;
-    // scene.add(planeObject2);
 
-
-
+    //=========================================================================
     // Create light
+    //=========================================================================
     light = new THREE.PointLight(0xffffff,1.0,100,100);
     light.position.set(0,0.8,-2);
-    // light.position.set(camera.position);
     scene.add(light);
 
     var light2 = new THREE.DirectionalLight( 0xFFFFFF );
-    console.log(light2.position)
-    // var helper = new THREE.DirectionalLightHelper( light2, 5 );
     scene.add( light2 );
 
 
 
-
-    // make particle
-
+    //=========================================================================
+    // Make particle mesh
+    //=========================================================================
     var particleGeometry = new THREE.BufferGeometry();
     var particlePositions = new Float32Array( PARTICLES * 3 );
 
@@ -249,68 +207,11 @@ function initProtoplanets() {
         0.0, -1.0,-1.0,
         0.866025, -1.0, 0.5,
         -0.866025, -1.0, 0.5,
-
-        // // Front face
-        // -1.0, -1.0,  1.0,
-        // 1.0, -1.0,  1.0,
-        // 1.0,  1.0,  1.0,
-        //
-        // -1.0, -1.0,  1.0,
-        // 1.0,  1.0,  1.0,
-        // -1.0,  1.0,  1.0,
-        //
-        // // Back face
-        // -1.0, -1.0,  -1.0,
-        // 1.0, -1.0,  -1.0,
-        // 1.0,  1.0,  -1.0,
-        //
-        // -1.0, -1.0,  -1.0,
-        // 1.0,  1.0,  -1.0,
-        // -1.0,  1.0,  -1.0,
-        //
-        // // Top face
-        // -1.0,  1.0, -1.0,
-        // -1.0,  1.0,  1.0,
-        // 1.0,  1.0,  1.0,
-        //
-        // -1.0,  1.0, -1.0,
-        // 1.0,  1.0,  1.0,
-        // 1.0,  1.0, -1.0,
-        //
-        // // Bottom face
-        // -1.0,  -1.0, -1.0,
-        // -1.0,  -1.0,  1.0,
-        // 1.0,  -1.0,  1.0,
-        //
-        // -1.0,  -1.0, -1.0,
-        // 1.0,  -1.0,  1.0,
-        // 1.0,  -1.0, -1.0,
-        //
-        //
-        // // Right face
-        // 1.0, -1.0, -1.0,
-        // 1.0,  1.0, -1.0,
-        // 1.0,  1.0,  1.0,
-        //
-        // 1.0, -1.0, -1.0,
-        // 1.0,  1.0,  1.0,
-        // 1.0, -1.0,  1.0,
-        //
-        // // Left face
-        // -1.0, -1.0, -1.0,
-        // -1.0,  1.0, -1.0,
-        // -1.0,  1.0,  1.0,
-        //
-        // -1.0, -1.0, -1.0,
-        // -1.0,  1.0,  1.0,
-        // -1.0, -1.0,  1.0,
     ];
 
     var randomSize;
     var randomSizeH;
-    var ccc = 0;
     for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 * 4 ) {
-        // console.log( ++ccc );
         randomSize = 0.1 + Math.random()*2.0;
         randomSizeH = 0.1 + Math.random()*2.0;
 
@@ -318,12 +219,9 @@ function initProtoplanets() {
             particlePositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize*randomSize*randomSize;
             particlePositions[i + k + 1] = BOX_ARRAY[k+1]*hh*randomSizeH*randomSize*randomSizeH;
             particlePositions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSizeH*randomSizeH*randomSizeH;
-            //positions[i + k + 2] = BOX_ARRAY[k+2]*zz*3.;//randomSizeH*randomSizeH*randomSizeH;
-            // console.log(i,i + k)
         }
 
     }
-
 
     var particleUVs = new Float32Array( PARTICLES * 2 );
     var p = 0;
@@ -345,7 +243,6 @@ function initProtoplanets() {
 
     particleUniforms = THREE.UniformsUtils.merge([
         THREE.UniformsLib['lights'],
-        {},
         {
             texture1: { type: "t", value: null },
             texturePosition:     { value: null },
@@ -372,7 +269,6 @@ function initProtoplanets() {
     particleMaterial.extensions.drawBuffers = true;
 
     var particles = new THREE.Mesh( particleGeometry, particleMaterial );
-    // var particles = new THREE.Line( particleGeometry, particleMaterial );
     particles.matrixAutoUpdate = false;
     particles.updateMatrix();
     scene.add( particles );
@@ -387,31 +283,14 @@ function initProtoplanets() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-    // make particle
+    //=========================================================================
+    // Make body mesh
+    //=========================================================================
     const BODY_NUM = 36*251;
     var bodyGeometry = new THREE.BufferGeometry();
     var bodyPositions = new Float32Array( BODY_NUM * 3 );
 
     var ww = 0.04;
-    var hh = 0.04;
-    var zz = 0.04;
-
-    /*
-    0.0, -1.0,-1.0,
-    0.0, 1.0, 0.0,
-    0.866025, -1.0, 0.5,
-    -0.866025, -1.0, 0.5,
-     */
 
     var BOX_ARRAY = [
         0.0, -1.0,-1.0,
@@ -431,15 +310,11 @@ function initProtoplanets() {
         -0.866025, -1.0, 0.5,
     ];
 
-    var randomSize;
-    var randomSizeH;
     for ( var i = 0; i < BODY_NUM * 3; i+= 3 * 3 * 4 ) {
-        randomSize  = 1.0;// +(i%22==0?0.8:0.0);//Math.random()*3.0-1.0;
-        // randomSizeH = (Math.random()+Math.random()+Math.random()+Math.random()+Math.random())/5.0;
         for( var k = 0; k < 3*3*12; k+=3 ){
-            bodyPositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize;// * randomSize*2.;//*randomSize*40.0;
-            bodyPositions[i + k + 1] = BOX_ARRAY[k+1]*ww*randomSize;// * randomSizeH*3.;//*randomSize*40.0;
-            bodyPositions[i + k + 2] = BOX_ARRAY[k+2]*ww*randomSize;// * randomSizeH*2.;//*randomSizeH*50.0;
+            bodyPositions[i + k + 0] = BOX_ARRAY[k+0]*ww;
+            bodyPositions[i + k + 1] = BOX_ARRAY[k+1]*ww;
+            bodyPositions[i + k + 2] = BOX_ARRAY[k+2]*ww;
         }
     }
 
@@ -471,17 +346,8 @@ function initProtoplanets() {
 
 
 
-
-
-
-
-
-
-    // var path = './imgs/';
+    // Make cube texture
     var path = './imgs/';
-    // var urls = [ path + "posx.jpg", path + "negx.jpg",
-    //     path + "posy.jpg", path + "negy.jpg",
-    //     path + "posz.jpg", path + "negz.jpg" ];
     var urls = [
         path + "pz.png",
         path + "pz.png",
@@ -491,16 +357,6 @@ function initProtoplanets() {
         path + "pz.png",
     ];
     var textureCube = THREE.ImageUtils.loadTextureCube( urls );
-
-
-
-
-
-
-
-
-
-
 
 
     bodyUniforms = Object.assign(
@@ -522,26 +378,6 @@ function initProtoplanets() {
         }
     );
 
-    // bodyUniforms = THREE.UniformsUtils.merge([
-    //     THREE.UniformsLib['lights'],
-    //     {
-    //         texture1:            { type: "t", value: null },
-    //         soundCloudTexture:   { type: "t", value: null },
-    //         soundCloudHigh : { type: "f", value: 0 }, // single float
-    //         soundCloudLow : { type: "f",  value: 0 }, // single float
-    //         envMap: {
-    //             type: "t",
-    //             value: textureCube
-    //         },
-    //         texturePosition:     { value: null },
-    //         textureVelocity:     { value: null },
-    //         textureAcceleration: { value: null },
-    //         cameraConstant: { value: getCameraConstant( camera ) },
-    //         invMatrix: { value: new THREE.Matrix4() },
-    //     }
-    // ]);
-
-    // // ShaderMaterial
     var bodyMaterial = new THREE.ShaderMaterial( {
         uniforms:       bodyUniforms,
         vertexShader:   bodyVertexShader,
@@ -550,7 +386,6 @@ function initProtoplanets() {
         vertexColors: THREE.VertexColors,
         transparent: true,
         lights: true,
-        // linewidth : 5,
     });
 
     bodyMaterial.extensions.derivatives = true;
@@ -558,11 +393,9 @@ function initProtoplanets() {
 
 
     var bodyMarticles = new THREE.Mesh( bodyGeometry, bodyMaterial );
-    // var bodyMarticles2 = new THREE.Line( bodyGeometry, bodyMaterial );
     bodyMarticles.matrixAutoUpdate = false;
     bodyMarticles.updateMatrix();
     scene.add( bodyMarticles );
-    // scene.add( bodyMarticles2 );
 
     var m = new THREE.Matrix4();
     m.copy( bodyMarticles.matrixWorld );
@@ -578,27 +411,9 @@ function initProtoplanets() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //=========================================================================
+    // Loading
+    //=========================================================================
 
     var sum  = function(arr) {
         var sum = 0;
@@ -608,7 +423,6 @@ function initProtoplanets() {
         return sum;
     };
 
-    // model
     var count = 0;
     var totalPer = [];
     var loadingElement = document.getElementById("loadingNum");
@@ -623,21 +437,23 @@ function initProtoplanets() {
     };
 
     var onError = function ( xhr ) {
+
     };
 
-    //http://www.nicovideo.jp/watch/sm20793055
-    var modelFile = 'models/mmd/model.pmx';
-    // var modelFile = 'models/mmd/miku/miku_v2.pmd';
-    // var vmdFiles = [ 'models/mmd/vmds/wavefile_v2.vmd' ];
-    // var vmdFiles = [ 'models/mmd/vmds/dance.vmd' ];
-    // var vmdFiles = [ 'models/mmd/vmds/dance2.vmd', 'models/mmd/vmds/dance.vmd' ];
 
+
+
+    //=========================================================================
+    // Load MMD model
+    //=========================================================================
+
+    var modelFile = 'models/mmd/model.pmx';
     helper = new THREE.MMDHelper();
 
     var loader = new THREE.MMDLoader();
     loader.loadModel( modelFile, function ( mmdMesh ) {
 
-        console.log(mmdMesh)
+        //console.log(mmdMesh)
 
         var indexs = new Float32Array( mmdMesh.geometry.attributes.position.count );
         for ( var i = 0; i < mmdMesh.geometry.attributes.position.count; i++ ) {
@@ -664,16 +480,10 @@ function initProtoplanets() {
         mesh.scale.set(0.4,0.4,0.4);
         mesh.position.x = -1.4;
 
-        //scene.add( mesh );
         bufferScene.add( mesh );
 
         helper.add( mesh );
-        // helper.setAnimation( mesh );
 
-
-
-
-        // window.mmdMesh.mixer.timeScale = 1.14814814815;
 
         //debug ==================================================
         // uniforms2 = {
@@ -699,6 +509,10 @@ function initProtoplanets() {
 
 
 
+        //=========================================================================
+        // Load dance motion data
+        //=========================================================================
+
         var vmdFiles = [
             {name: 'dance1', file: 'models/mmd/vmds/dance.vmd'},
             {name: 'dance2', file: 'models/mmd/vmds/dance2.vmd'},
@@ -716,12 +530,18 @@ function initProtoplanets() {
                 loader.createAnimation(mmdMesh, vmd, vmdFiles[vmdIndex].name);
                 vmdIndex++;
                 if (vmdIndex < vmdFiles.length) {
+
+                    //Load next data
+
                     loadVmd();
+
                 } else {
+
+                    //All data is loaded
+
                     helper.setAnimation(mesh);
 
                     mesh.mixer.stopAllAction();
-
 
                     if( window.soundCloud )window.soundCloud.play();
 
@@ -744,7 +564,12 @@ function initProtoplanets() {
                     stopList.push( motionObj.dance6 );
                     stopList.push( motionObj.dance7 );
 
-                    window.mmdMesh.mixer.timeScale = 1.11851851851;
+                    window.mmdMesh.mixer.timeScale = 1.14814814815;
+
+
+                    //=========================================================================
+                    // add keypress event
+                    //=========================================================================
 
                     var isOpening = true;
                     var typeAnyElement = document.getElementById("typeAnyKey");
@@ -799,10 +624,6 @@ function initProtoplanets() {
                         }
                     };
 
-                    // helper.setPhysics(mesh);
-                    // helper.unifyAnimationDuration({afterglow: 1.0});
-
-                    // console.log(mesh.geometry.animations.length);
 
                     var _wpLoadingElement = document.getElementById("wp-loading");
                     var hh = $(window).height()/2;
@@ -827,40 +648,28 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
     var velArray   = textureVelocity.image.data;
     var accArray   = textureAcceleration.image.data;
 
-    console.log("pos",posArray.length)
-    console.log("vel",velArray.length)
 
     var count = 0;
     for ( var k = 0, kl = posArray.length; k < kl; k += 4*3*12 ) {
         count++;
-        // console.log("num",count)
-        // Position
-        var x, y, z;
-        var posrX = 0;//Math.random() - .5;
-        var posrY = 0;//Math.random() + 0.3;// - .5;
-        var posrZ = 0;//Math.random() - 0.5;
-        var w = count;//Math.random()*9000;
+
+        var w = count;
 
         for( var k2 = 0; k2 < 4*3*12; k2 += 4 ){
-            posArray[ k + k2 + 0 ] = posrX;
-            posArray[ k + k2 + 1 ] = posrY;
-            posArray[ k + k2 + 2 ] = posrZ;
+            posArray[ k + k2 + 0 ] = 0;
+            posArray[ k + k2 + 1 ] = 0;
+            posArray[ k + k2 + 2 ] = 0;
             posArray[ k + k2 + 3 ] = w;
         }
-
-        var velX = 0;
-        var velY = 0;
-        var velZ = 0;
 
         w = Math.random();
 
         for( var k2 = 0; k2 < 4*3*12; k2 += 4 ){
-            velArray[ k + k2+0 ] = velX;
-            velArray[ k + k2+1 ] = velY;
-            velArray[ k + k2+2 ] = velZ;
+            velArray[ k + k2+0 ] = 0;
+            velArray[ k + k2+1 ] = 0;
+            velArray[ k + k2+2 ] = 0;
             velArray[ k + k2+3 ] = w;
         }
-
 
         var accX = Math.random() * 0.01 - 0.005;
         var accY = -0.0001;//-0.0001 - Math.random()*0.001;
@@ -886,13 +695,10 @@ function getCameraConstant( camera ) {
 
 function playAnimation(name){
 
-    //actionList.push( motionObj[name] );
-
     isIdling = false;
 
     window.stopList = window.stopList.concat( window.playList.splice(0,window.playList.length) );
     window.stopList.forEach((value,index)=>{
-
         if( value._clip.name == name ){
             window.playList = window.stopList.splice(index,1);
             window.playList[0].time = 0;
@@ -924,12 +730,6 @@ function animate() {
 
     rl2 += 0.01;
     if( rl2 > 6.28 )rl2 -= 6.28;
-
-
-    // camera.position.z = mmdMesh.skeleton.bones[0].position.z*0.4;
-    // camera.position.x = mmdMesh.skeleton.bones[0].position.x*0.4;
-    // camera.position.y = mmdMesh.skeleton.bones[0].position.y*0.4;
-
 
     camera.position.x = 2.5 * Math.cos(rl1);
     camera.position.y = 1.0 + Math.cos(rl2)*0.5;
@@ -998,6 +798,7 @@ function render() {
 
     //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle velocity
     velocityVariable.material.uniforms.texture1.value = bufferTexture.texture;
+
     //pass mmd skineed mesh data to computeShaderVelocity shader to calculate particle position
     positionVariable.material.uniforms.texture1.value = bufferTexture.texture;
 
@@ -1027,15 +828,12 @@ function render() {
 
     particleUniforms.textureAcceleration.value = gpuCompute.getCurrentRenderTarget( accelerationVariable ).texture;
 
-
     bodyUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget( positionVariable ).texture;
     bodyUniforms.textureVelocity.value = gpuCompute.getCurrentRenderTarget( velocityVariable ).texture;
     bodyUniforms.textureAcceleration.value = gpuCompute.getCurrentRenderTarget( accelerationVariable ).texture;
 
-
     // renderer.setMode( _gl.POINTS );
     renderer.render( scene, camera );
-
 
     renderer.render(bufferScene, camera, bufferTexture2);
 }
