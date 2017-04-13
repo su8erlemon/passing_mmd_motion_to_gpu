@@ -31,3 +31,9 @@ For development, you will need Node.js installed on your environment.
 ```
   $ npm run build
 ```
+
+
+## Further Reading
+<https://github.com/mattdesl/budo> - a dev server for rapid prototyping
+
+<http://qiita.com/ykido/items/55c7f17fb32216056705> - (Japanese)Threejs ShaderMaterial + SkinnedMesh 
