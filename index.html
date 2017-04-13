@@ -1,52 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: http://www.facebook.com/2008/fbml">
     <head>
-        <title>test</title>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Golden Dancer</title>
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link href="https://fonts.googleapis.com/css?family=Geo:400i" rel="stylesheet">
     </head>
     <body>
-    <script id="vertexShader" type="x-shader/x-vertex">
 
-// uniform float fresnelBias;
-// uniform float fresnelScale;
-// uniform float fresnelPower;
+        <div class="wrap">
 
-varying float vReflectionFactor;
-varying vec3 vReflect;
+            <div class="content">
+                <canvas id="canvas"></canvas>
+            </div>
 
-void main() {
-  vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-  vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
 
-  vec3 worldNormal = normalize( mat3( modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz ) * normal );
+            <div class="op">
+                <div class="op__container">
+                    <h1>Let's dance!</h1>
+                    <div class="op__keyboard"><img src="imgs/keyboard.svg"></div>
+                    <div id="typeAnyKey" class="op__anykey">[&nbsp;type any key!&nbsp;]</div>
+                </div>
+            </div>
 
-  vec3 I = worldPosition.xyz - cameraPosition;
+            <div class="info">
+                <div class="info__container">
+                    <h2>What is this&#63;</h2>
+                    <p>This experiment uses MMD file format which was originally used to produced 3D character and dance motion data for the Vocaloid character Hatsune Miku.</p>
+                    <div class="info__img"><img src="./imgs/info.png" height="75"></div>
+                    <p>I used a texture for passing MMD skinned mesh vertex data to the GPU. This method produces a developer high-performance calculation and expanding expression ideas with the MMD file.</p>
+                    <p>
+                        You can check detailed the below repository.
+                        <a href="https://github.com/su8erlemon/passing_mmd_motion_to_gpu" target="_blank">https://github.com/su8erlemon/passing_mmd_motion_to_gpu</a>
+                    </p>
 
-  vReflect = reflect( I, worldNormal );
-  vReflectionFactor = 1.0;//fresnelBias + fresnelScale * pow( 1.0 + dot( normalize( I ), worldNormal ), fresnelPower );
+                </div>
+            </div>
 
-  gl_Position = projectionMatrix * mvPosition;
-}
-  </script>
+            <div class="footer" id="footer">
+                <div class="footer--info"><a href="https://twitter.com/su8erlemon_en" target="_blank"> Author: @su8elemon_en</a></div>
+            </div>
 
-    <script id="fragmentShader" type="x-shader/x-fragment">
 
-uniform vec3 color;
-uniform samplerCube envMap;
+            <div id="wp-loading">
+                <div id="wp-loading-container">
+                    <div class="loading-text">
+                        <div id="loadingNum">Loading 0 %</div>
+                        <div class="loading__sound"><img src="imgs/speaker-filled-audio-tool.svg"></div>
+                    </div>
+                </div>
+            </div>
 
-varying vec3 vReflect;
-varying float vReflectionFactor;
-
-void main() {
-  vec4 envColor = textureCube( envMap, vec3( -vReflect.x, vReflect.yz ) );
-  gl_FragColor = vec4(mix(vec3(0.,0.,0.), envColor.xyz, vec3(clamp( vReflectionFactor, 0.0, 1.0 ))), 1.0);
-}
-  </script>
-
-        <canvas id="canvas"></canvas>
+        </div>
 
         <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.8/p5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
 
         <script src="lib/js/three.js"></script>
         <script src="lib/js/mmdparser.min.js"></script>

@@ -11,7 +11,9 @@ const soundCloud = new SoundCloud();
 // soundCloud.init("https://soundcloud.com/aoki-1/sswb-aoki-takamasa-remix-excerpt",
 soundCloud.init("https://soundcloud.com/gradesofficial/king-chris-lake-remix",
     (menuElement, debugCanvas) => {
-        document.body.appendChild( menuElement );
+
+
+        document.getElementById("footer").appendChild( menuElement );
         // document.body.appendChild( debugCanvas );
 
         soundCloudTexture = new THREE.DataTexture(soundCloud.getBytes(), 8, 8, THREE.RGBFormat );
@@ -112,7 +114,7 @@ var uniforms2;
 
 var cameraLookAt = new THREE.Vector3(0,0.3,0);
 var cameraLookAt2 = new THREE.Vector3(0,0.3,0);
-var rl1 = 0,
+var rl1 = 3.2,
     rl2 = 0,rl3;
 
 init();
@@ -598,11 +600,25 @@ function initProtoplanets() {
 
 
 
+    var sum  = function(arr) {
+        var sum = 0;
+        arr.forEach(function(elm) {
+            sum += elm;
+        });
+        return sum;
+    };
+
     // model
+    var count = 0;
+    var totalPer = [];
+    var loadingElement = document.getElementById("loadingNum");
     var onProgress = function ( xhr ) {
         if ( xhr.lengthComputable ) {
             var percentComplete = xhr.loaded / xhr.total * 100;
-            console.log( Math.round(percentComplete, 2) + '% downloaded' );
+            totalPer[count] = percentComplete;
+            if( Math.round(percentComplete, 2) == 100 )count++;
+            console.log(sum(totalPer)*1/8)
+            loadingElement.innerHTML = "Loading " + parseInt(sum(totalPer)*1/8) + " %";
         }
     };
 
@@ -726,47 +742,69 @@ function initProtoplanets() {
                     stopList.push( motionObj.dance6 );
                     stopList.push( motionObj.dance7 );
 
+                    window.mmdMesh.mixer.timeScale = 1.11851851851;
 
-                    window.mmdMesh.mixer.timeScale = 1.11851851851
+                    var isOpening = true;
+                    var typeAnyElement = document.getElementById("typeAnyKey");
 
-                    $(document).keypress(function(e) {
-                        switch (e.which){
-                            case 97:
-                                playAnimation("dance1")
-                                break;
-                            case 115:
-                                playAnimation("dance2")
-                                break;
+                    $(document).bind("touchstart", changeAnimationHandler);
+                    $(document).keypress(changeAnimationHandler);
 
-                            case 100:
-                                playAnimation("dance3")
-                                break;
+                    function changeAnimationHandler(e) {
 
-                            case 102:
-                                playAnimation("dance4")
-                                break;
-
-                            case 103:
-                                playAnimation("dance5")
-                                break;
-
-                            case 104:
-                                playAnimation("dance6")
-                                break;
-
-                            case 106:
-                                playAnimation("dance7")
-                                break;
-
+                        if( isOpening ){
+                            isOpening = false;
+                            $(".op").addClass("hide")
+                            $(".info").addClass("show")
                         }
-                    });
+
+                        TweenMax.killTweensOf(typeAnyElement);
+                        TweenMax.to( typeAnyElement, 0.0, {scale:1.5} );
+                        TweenMax.to( typeAnyElement, 0.3, {scale:1.0} );
+
+                        if( e.which ){
+                            switch (e.which){
+                                case 115:
+                                    playAnimation("dance2")
+                                    break;
+
+                                case 100:
+                                    playAnimation("dance3")
+                                    break;
+
+                                case 102:
+                                    playAnimation("dance4")
+                                    break;
+
+                                case 103:
+                                    playAnimation("dance5")
+                                    break;
+
+                                case 104:
+                                    playAnimation("dance6")
+                                    break;
+
+                                case 106:
+                                    playAnimation("dance7")
+                                    break;
+
+                                default:
+                                    playAnimation("dance" + parseInt(Math.random()*6+2));
+                                    break;
+                            }
+                        }else{
+                            playAnimation("dance" + parseInt(Math.random()*6+2));
+                        }
+                    };
 
                     // helper.setPhysics(mesh);
                     // helper.unifyAnimationDuration({afterglow: 1.0});
 
                     // console.log(mesh.geometry.animations.length);
 
-                    initGui();
+                    var _wpLoadingElement = document.getElementById("wp-loading");
+                    var hh = $(window).height()/2;
+                    TweenMax.to( _wpLoadingElement, 0.5, {delay:0.5, height:0, y:hh,/*height:0, y:hh,*/ ease:Expo.easeInOut} );
 
                     animate();
 
@@ -775,27 +813,7 @@ function initProtoplanets() {
         };
         loadVmd();
 
-
-
-
-
-
-
-
     }, onProgress, onError );
-
-
-    function initGui () {
-        var api = {
-            'animation': true,
-        };
-        var gui = new dat.GUI();
-        // gui.add( api, 'animation' ).onChange( function () {
-        //     helper.doAnimation = api[ 'animation' ];
-        // } );
-    }
-
-
 
 
 
@@ -911,9 +929,9 @@ function animate() {
     // camera.position.y = mmdMesh.skeleton.bones[0].position.y*0.4;
 
 
-    camera.position.x = 2.0 * Math.cos(rl1);
+    camera.position.x = 2.5 * Math.cos(rl1);
     camera.position.y = 1.0 + Math.cos(rl2)*0.5;
-    camera.position.z = 1.0+2.0 * Math.sin(rl1) + Math.sin(rl2)*0.5;
+    camera.position.z = 2.5 * Math.sin(rl1) + Math.sin(rl2)*0.5;
 
     light.position.x = camera.position.x;
     light.position.y = camera.position.y;
@@ -924,7 +942,7 @@ function animate() {
         cameraLookAt2.y += (mmdMesh.skeleton.bones[0].position.y*0.00 - cameraLookAt2.y )/10.0;
         cameraLookAt2.z += (mmdMesh.skeleton.bones[0].position.z*0.01 - cameraLookAt2.z )/10.0;
     }
-    cameraLookAt.set(cameraLookAt2.x,0.3+cameraLookAt2.y,cameraLookAt2.z)
+    cameraLookAt.set( cameraLookAt2.x, 0.4+cameraLookAt2.y, cameraLookAt2.z );
     camera.lookAt(cameraLookAt);
 
     if( motionObj ){

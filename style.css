@@ -3,15 +3,243 @@
     padding: 0;
 }
 
-.__SC__menu{
+html,body,.wrap,.content{
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    font-size: 0px;
+}
+
+body{
+    overflow: hidden;
+}
+
+
+h1,h2{
+    font-family: 'Geo', sans-serif;
+    font-size: 16px;
+}
+
+p, a{
+    font-family: sans-serif;
+    font-size: 16px;
+}
+
+.wrap{
+    position: relative;
+}
+
+
+
+
+
+.op{
     position: absolute;
-    bottom: 20px;
+    top: 0px;
+    left: 0px;
+
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+
+
+.op__keyboard img{
+    width: 70px;
+    height: auto;
+}
+
+.op__container{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.op h1{
+    font-family: 'Geo', sans-serif;
+    font-size: 114px;
+    color: #fff;
+}
+
+.op__anykey{
+    font-family: 'Geo', sans-serif;
+    font-size: 20px;
+    color: #fff;
+}
+
+.op.hide{
+    transform: translateY(calc(50% - 160px));
+    transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1) 0.1s;
+}
+
+.op.hide h1,
+.op.hide .op__keyboard img{
+    opacity: 0;
+    transition: all 0.3s;
+}
+
+
+
+#wp-loading{
+
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #000000;
+    color: #ffffff;
+    overflow: hidden;
+
+}
+
+#wp-loading-container {
+    top: 50%;
+    position: absolute;
+    left: 50%;
+    text-align: center;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.loading-text{
+    font-family: 'Geo', sans-serif;
+    font-size: 20px;
+    color: #fff;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.loading-text div{
+    margin-bottom: 10px;
+}
+
+.loading__sound img{
+    width: 20px;
+}
+
+.loading__sound{
+    animation: Flash1 2s infinite;
+}
+
+@keyframes Flash1{
+    50%{
+        opacity: 0.5;
+    }
+}
+
+
+
+
+
+.info{
+    position: absolute;
+    top: 0px;
+    left: 20%;
+
+    height: 100%;
+    width: 425px;
+    display: table;
+
+    opacity: 0;
+}
+
+.info.show{
+    opacity: 1;
+    transition: opacity 0.5s linear 8.0s;
+}
+
+@media (max-width: 2100px) {
+    .info {
+        left: 15%;
+    }
+}
+
+@media (max-width: 1600px) {
+    .info {
+        left: 10%;
+    }
+}
+
+@media (max-width: 900px) {
+    .info {
+        left: 5%;
+    }
+}
+
+.info__img{
+    text-align: center;
+    margin-bottom: 30px;
+    margin-left: -40px;
+}
+
+.info__container{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: left;
+}
+
+.info h2{
+    font-size: 72px;
+    color: #fff;
+    line-height: 0.7;
+    margin-bottom: 30px;
+}
+
+.info p{
+    font-size: 14px;
+    margin-bottom: 30px;
+    line-height:1.5;
+}
+
+.info a{
+    color: #fff;
+    font-size: 14px;
+}
+
+
+
+
+
+
+.footer{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    height: 20px;
+    /*padding: 20px;*/
+}
+
+.footer--info a{
+    font-family: 'Geo', sans-serif;
+    position: absolute;
+    right: 20px;
+    bottom: 10px;
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.__SC__menu{
+    font-family: 'Geo', sans-serif;
+    position: absolute;
+    left: 20px;
+    bottom: 10px;
 }
 
 .__SC__menu a{
+    font-family: 'Geo', sans-serif;
     color: #fff;
-    padding: 20px;
+    text-decoration: none;
+    margin-right: 20px;
 }
+
+.__SC__menu canvas{
+    cursor: pointer;
+}
+
+
 
 
 #SoundCloudController_debug{
