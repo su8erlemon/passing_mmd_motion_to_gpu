@@ -1,7 +1,7 @@
 # passing_mmd_motion_to_gpu
 
 This experiment uses MMD file format which is originally used to produced 3D character and dance motion data for the Vocaloid character Hatsune Miku.
-A user is able to make The golden dancer dance by typing keys.
+Users can manipulate and control the dancer with the keyboard
 I used a texture for passing MMD skinned mesh vertex data to the GPU. This method produces a developer high-performance calculation and expanding expression ideas with the MMD file.
 You can check detail from the repository.
 
