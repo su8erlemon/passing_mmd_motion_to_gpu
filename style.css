@@ -12,6 +12,9 @@ html,body,.wrap,.content{
 
 body{
     overflow: hidden;
+    font-family: sans-serif;
+    line-height: 1.5;
+    background-color: #111111;
 }
 
 
@@ -60,6 +63,11 @@ p, a{
     font-size: 114px;
     color: #fff;
 }
+@media (max-width: 400px) {
+    .op h1 {
+        font-size: 72px;
+    }
+}
 
 .op__anykey{
     font-family: 'Geo', sans-serif;
@@ -70,6 +78,11 @@ p, a{
 .op.hide{
     transform: translateY(calc(50% - 160px));
     transition: all 0.8s cubic-bezier(0.77, 0, 0.175, 1) 0.1s;
+}
+@media (max-width: 400px) {
+    .op.hide {
+        transform: translateY(0);
+    }
 }
 
 .op.hide h1,
@@ -149,6 +162,7 @@ p, a{
     transition: opacity 0.5s linear 8.0s;
 }
 
+
 @media (max-width: 2100px) {
     .info {
         left: 15%;
@@ -198,6 +212,13 @@ p, a{
 }
 
 
+@media (max-width: 400px) {
+    .info {
+        display: none;
+    }
+}
+
+
 
 
 
@@ -218,6 +239,15 @@ p, a{
     bottom: 10px;
     color: #fff;
     text-decoration: none;
+}
+
+
+@media (max-width: 400px) {
+    .footer--info a{
+        right: auto;
+        left: 20px;
+        bottom: 30px;
+    }
 }
 
 

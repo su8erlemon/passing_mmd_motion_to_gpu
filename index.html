@@ -27,7 +27,7 @@
             <div class="info">
                 <div class="info__container">
                     <h2>What is this&#63;</h2>
-                    <p>This experiment uses MMD file format which was originally used to produced 3D character and dance motion data for the Vocaloid character Hatsune Miku.</p>
+                    <p>This experiment uses MMD file format which is originally used to produced 3D character and dance motion data for the Vocaloid character Hatsune Miku.</p>
                     <div class="info__img"><img src="./imgs/info.png" height="75"></div>
                     <p>I used a texture for passing MMD skinned mesh vertex data to the GPU. This method produces a developer high-performance calculation and expanding expression ideas with the MMD file.</p>
                     <p>
@@ -54,6 +54,41 @@
 
         </div>
 
+        <script>
+
+            window.onload = function(){
+                //----------------------------------------------------------------------------------------
+                // webgl check
+                //----------------------------------------------------------------------------------------
+                 var notSupport = function(){
+                     document.body.innerHTML = "<div style='font-size: 16px; padding: 20px;'>Sorry, Your browser does not support WebGL. <br/>\
+                                Please download Chrome, Firefox or Safari with WebGL enabled try launching this site again.</div>";
+                 }
+
+                 var CanvasDetector = {
+                     canCanvas: function () { return !!window.CanvasRenderingContext2D },
+                     canWebGL: function () {
+                         try{
+                             return !!window.WebGLRenderingContext && !!document.createElement( 'canvas' ).getContext( 'experimental-webgl' );
+                         }catch( e ) {
+                             return false;
+                         }
+                     }
+                 };
+
+                 if( !CanvasDetector.canCanvas() ) {
+                     notSupport();
+                     return;
+                 }else if( !CanvasDetector.canWebGL() ) {
+                     notSupport();
+                     return;
+                 }
+                 //----------------------------------------------------------------------------------------
+                 // webgl check
+                 //----------------------------------------------------------------------------------------
+            }
+
+        </script>
         <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.8/p5.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>

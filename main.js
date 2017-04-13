@@ -1,4 +1,3 @@
-
 const threeApp = require('./lib/CreateThree');
 
 const { camera, scene, renderer, controls } = threeApp();
@@ -25,7 +24,8 @@ soundCloud.init("https://soundcloud.com/gradesofficial/king-chris-lake-remix",
 
         // soundCloud.debugShow();
 
-        soundCloud.play();
+
+        if( !soundCloud.getIsPlay())soundCloud.play();
         window.soundCloud = soundCloud;
     }
 );
@@ -478,17 +478,17 @@ function initProtoplanets() {
 
 
     // var path = './imgs/';
-    var path = './imgs/SwedishRoyalCastle_/';
+    var path = './imgs/';
     // var urls = [ path + "posx.jpg", path + "negx.jpg",
     //     path + "posy.jpg", path + "negy.jpg",
     //     path + "posz.jpg", path + "negz.jpg" ];
     var urls = [
-        path + "pz.jpg",
-        path + "nz.jpg",
-        path + "pz.jpg",
-        path + "nz.jpg",
-        path + "pz.jpg",
-        path + "nz.jpg"
+        path + "pz.png",
+        path + "pz.png",
+        path + "pz.png",
+        path + "pz.png",
+        path + "pz.png",
+        path + "pz.png",
     ];
     var textureCube = THREE.ImageUtils.loadTextureCube( urls );
 
@@ -722,6 +722,8 @@ function initProtoplanets() {
 
                     mesh.mixer.stopAllAction();
 
+
+                    if( window.soundCloud )window.soundCloud.play();
 
                     motionObj = {};
                     for (var i = 0; i < mesh.geometry.animations.length; ++i) {
