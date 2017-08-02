@@ -439,7 +439,9 @@ function initProtoplanets() {
             totalPer[count] = percentComplete;
             if( Math.round(percentComplete, 2) == 100 )count++;
             console.log(sum(totalPer)*1/8)
-            loadingElement.innerHTML = "Loading " + parseInt(sum(totalPer)*1/8) + " %";
+            var per = parseInt(sum(totalPer)*1/8);
+            if( per >= 100 )per = 100
+            loadingElement.innerHTML = "Loading " + per + " %";
         }
     };
 
