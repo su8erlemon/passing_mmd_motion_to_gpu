@@ -11,6 +11,9 @@ varying vec4 vColor;
 
 uniform float radius;
 uniform float amount;
+varying mat4 vModelViewMatrix;
+varying vec3 vNormal;
+varying float gain;
 
 void main() {
 
@@ -49,18 +52,24 @@ void main() {
 
     newPosition = maty * matz * newPosition;
 
-
     newPosition += pos;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4( newPosition, 1.0 );
 
-    vPosition = gl_Position;
 
-    float per = accTemp.w * 0.03;
-    vColor = vColor = vec4( gl_Position.zxy, 1.0 ) * (1.0-per) +
-            //vec4( 247.0/255.0, 240.0/255.0, 92.0/255.0, 1.0 ) * (1.0-per) +
-//                 vec4( 52.0/255.0, 38.0/255.0, 91.0/255.0, 1.0 ) * (per);
-                vec4( 240.0/255.0, 240.0/255.0, 35.0/255.0, 1.0 ) * (per);
+    vModelViewMatrix = modelViewMatrix;
+
+    vPosition = gl_Position;
+    vNormal = normalMatrix * normal;
+
+//    gain = abs(length(velTemp.xyz));
+
+//    float per = accTemp.w * 0.03;
+    //vColor = vec4( 248.0/255.0, 240.0/255.0, 42.0/255.0, 1.0 );
+//    vColor = vec4( gl_Position.zxy, 1.0 ) * (1.0-per) +
+//            //vec4( 247.0/255.0, 240.0/255.0, 92.0/255.0, 1.0 ) * (1.0-per) +
+////                 vec4( 52.0/255.0, 38.0/255.0, 91.0/255.0, 1.0 ) * (per);
+//                vec4( 240.0/255.0, 240.0/255.0, 35.0/255.0, 1.0 ) * (per);
 
 
 }

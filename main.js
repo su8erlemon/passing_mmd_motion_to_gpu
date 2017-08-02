@@ -1,7 +1,7 @@
 const threeApp = require('./lib/CreateThree');
 
 const { camera, scene, renderer, controls } = threeApp();
-
+import { assetsInit } from './lib/AssetsController';
 const glsl = require('glslify');
 
 let soundCloudTexture;
@@ -60,6 +60,7 @@ var helper;
 var clock = new THREE.Clock();
 
 var WIDTH = 36*20;
+// var WIDTH = 10*20;
 
 var geometry;
 var PARTICLES = WIDTH * WIDTH;
@@ -110,7 +111,10 @@ var cameraLookAt2 = new THREE.Vector3(0,0.3,0);
 var rl1 = 3.2,
     rl2 = 0;
 
-init();
+
+assetsInit(()=>{
+    init();
+});
 
 
 function init() {
@@ -172,12 +176,12 @@ function initProtoplanets() {
     //=========================================================================
     // Create light
     //=========================================================================
-    light = new THREE.PointLight(0xffffff,1.0,100,100);
-    light.position.set(0,0.8,-2);
-    scene.add(light);
-
-    var light2 = new THREE.DirectionalLight( 0xFFFFFF );
-    scene.add( light2 );
+    // light = new THREE.PointLight(0xffffff,1.0,100,100);
+    // light.position.set(0,0.8,-2);
+    // scene.add(light);
+    //
+    // var light2 = new THREE.DirectionalLight( 0xFFFFFF );
+    // scene.add( light2 );
 
 
 
@@ -187,9 +191,9 @@ function initProtoplanets() {
     var particleGeometry = new THREE.BufferGeometry();
     var particlePositions = new Float32Array( PARTICLES * 3 );
 
-    var ww = 0.002;
-    var hh = 0.002;
-    var zz = 0.002;
+    var ww = 0.005;
+    var hh = 0.005;
+    var zz = 0.005;
 
     var BOX_ARRAY = [
         0.0, -1.0,-1.0,
@@ -212,13 +216,13 @@ function initProtoplanets() {
     var randomSize;
     var randomSizeH;
     for ( var i = 0; i < PARTICLES * 3; i+= 3 * 3 * 4 ) {
-        randomSize = 0.1 + Math.random()*2.0;
-        randomSizeH = 0.1 + Math.random()*2.0;
+        randomSize =  1.0+Math.random()*1.0;
+        randomSizeH = 1.0+Math.random()*1.0;
 
         for( var k = 0; k < 3*3*12; k+=3 ){
-            particlePositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize*randomSize*randomSize;
-            particlePositions[i + k + 1] = BOX_ARRAY[k+1]*hh*randomSizeH*randomSize*randomSizeH;
-            particlePositions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSizeH*randomSizeH*randomSizeH;
+            particlePositions[i + k + 0] = BOX_ARRAY[k+0]*ww*randomSize ;
+            particlePositions[i + k + 1] = BOX_ARRAY[k+1]*hh*randomSize ;
+            particlePositions[i + k + 2] = BOX_ARRAY[k+2]*zz*randomSizeH ;
         }
 
     }
@@ -241,18 +245,21 @@ function initProtoplanets() {
     particleGeometry.addAttribute( 'uv',       new THREE.BufferAttribute( particleUVs, 2 ) );
     particleGeometry.addAttribute( 'index2',   new THREE.BufferAttribute( particleIndexs, 1 ) );
 
-    particleUniforms = THREE.UniformsUtils.merge([
-        THREE.UniformsLib['lights'],
-        {
-            texture1: { type: "t", value: null },
-            texturePosition:     { value: null },
-            textureVelocity:     { value: null },
-            textureAcceleration: { value: null },
-            amount:              { type: "f",  value: 0 }, // single float
-            cameraConstant: { value: getCameraConstant( camera ) },
-            invMatrix: { value: new THREE.Matrix4() },
-        },
-    ]);
+    particleGeometry.computeVertexNormals()
+
+    //THREE.UniformsUtils.merge([
+        // THREE.UniformsLib['lights'],
+    particleUniforms = {
+        texture1: { type: "t", value: null },
+        textureMat: { type: "t", value: ASSETS.matcap1 },
+        texturePosition:     { value: null },
+        textureVelocity:     { value: null },
+        textureAcceleration: { value: null },
+        amount:              { type: "f",  value: 0 }, // single float
+        cameraConstant: { value: getCameraConstant( camera ) },
+        invMatrix: { value: new THREE.Matrix4() },
+    };
+
 
     // // ShaderMaterial
     var particleMaterial = new THREE.ShaderMaterial( {
@@ -262,7 +269,7 @@ function initProtoplanets() {
         side:           THREE.DoubleSide,
         vertexColors: THREE.VertexColors,
         transparent: true,
-        lights: true,
+        // lights: true,
     } );
 
     particleMaterial.extensions.derivatives = true;
@@ -359,24 +366,24 @@ function initProtoplanets() {
     var textureCube = THREE.ImageUtils.loadTextureCube( urls );
 
 
-    bodyUniforms = Object.assign(
-        THREE.UniformsLib['lights'],
-        {
-            texture1:            { type: "t", value: null },
-            soundCloudTexture:   { type: "t", value: null },
-            soundCloudHigh : { type: "f", value: 0 }, // single float
-            soundCloudLow : { type: "f",  value: 0 }, // single float
-            envMap: {
-                type: "t",
-                value: textureCube
-            },
-            texturePosition:     { value: null },
-            textureVelocity:     { value: null },
-            textureAcceleration: { value: null },
-            cameraConstant: { value: getCameraConstant( camera ) },
-            invMatrix: { value: new THREE.Matrix4() },
-        }
-    );
+    // bodyUniforms = Object.assign(
+        // THREE.UniformsLib['lights'],
+    bodyUniforms = {
+        texture1:            { type: "t", value: null },
+        soundCloudTexture:   { type: "t", value: null },
+        soundCloudHigh : { type: "f", value: 0 }, // single float
+        soundCloudLow : { type: "f",  value: 0 }, // single float
+        envMap: {
+            type: "t",
+            value: textureCube
+        },
+        texturePosition:     { value: null },
+        textureVelocity:     { value: null },
+        textureAcceleration: { value: null },
+        cameraConstant: { value: getCameraConstant( camera ) },
+        invMatrix: { value: new THREE.Matrix4() },
+    }
+
 
     var bodyMaterial = new THREE.ShaderMaterial( {
         uniforms:       bodyUniforms,
@@ -385,7 +392,7 @@ function initProtoplanets() {
         side:           THREE.DoubleSide,
         vertexColors: THREE.VertexColors,
         transparent: true,
-        lights: true,
+        // lights: true,
     });
 
     bodyMaterial.extensions.derivatives = true;
@@ -671,9 +678,9 @@ function fillTextures( texturePosition, textureVelocity, textureAcceleration ) {
             velArray[ k + k2+3 ] = w;
         }
 
-        var accX = Math.random() * 0.01 - 0.005;
-        var accY = -0.0001;//-0.0001 - Math.random()*0.001;
-        var accZ = Math.random() * 0.01 - 0.005;
+        var accX = 0.0;//Math.random() * 0.2 - 0.01;
+        var accY = 0.0;//-0.0001;//-0.0001 - Math.random()*0.001;
+        var accZ = 0.0;//Math.random() * 0.2 - 0.1;
 
         for( var k2 = 0; k2 < 4*3*12; k2 += 4 ){
             accArray[ k + k2+0 ] = accX;
@@ -731,13 +738,13 @@ function animate() {
     rl2 += 0.01;
     if( rl2 > 6.28 )rl2 -= 6.28;
 
-    camera.position.x = 2.5 * Math.cos(rl1);
+    camera.position.x = 2.0 * Math.cos(rl1);
     camera.position.y = 1.0 + Math.cos(rl2)*0.5;
-    camera.position.z = 2.5 * Math.sin(rl1) + Math.sin(rl2)*0.5;
+    camera.position.z = 2.0 * Math.sin(rl1) + Math.sin(rl2)*0.5;
 
-    light.position.x = camera.position.x;
-    light.position.y = camera.position.y;
-    light.position.z = camera.position.z;
+    // light.position.x = camera.position.x;
+    // light.position.y = camera.position.y;
+    // light.position.z = camera.position.z;
 
     if( window.mmdMesh ){
         cameraLookAt2.x += (mmdMesh.skeleton.bones[0].position.x*0.00 - cameraLookAt2.x )/10.0;

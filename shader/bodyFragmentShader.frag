@@ -30,5 +30,6 @@ void main() {
 
     vec4 envColor = textureCube( envMap, vec3( -vReflect.x, vReflect.yz ) );
     gl_FragColor = vec4(mix(vec3(1.,1.,0.), envColor.xyz, vec3(clamp( vReflectionFactor, 0.0, 0.95 ))), 1.0);
+    gl_FragColor *= vec4(1.3,1.2,1.0,1.0);
 
 }
